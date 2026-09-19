@@ -22,13 +22,33 @@
     --faint:#3c4658;
     --radius:18px;
   }
+  /* ---------- LIGHT THEME OVERRIDES ---------- */
+:root[data-theme="light"]{
+  --void:#f4f7fa;
+  --panel:rgba(255,255,255,0.75);
+  --panel-solid:#ffffff;
+  --border:rgba(0,150,110,0.18);
+  --border-strong:rgba(0,150,110,0.4);
+  --mint:#00b386;
+  --magenta:#e0245e;
+  --blue:#0077b6;
+  --gold:#c98a00;
+  --text:#0b1220;
+  --muted:#5b6b7a;
+  --faint:#c7cfd8;
+}
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
     background:var(--void); color:var(--text);
     font-family:'Space Grotesk',sans-serif;
     min-height:100vh; overflow-x:hidden; position:relative;
+  background:var(--void); color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+  min-height:100vh; overflow-x:hidden; position:relative;
+  transition:background .5s ease, color .5s ease;
   }
+  
   .backdrop{
     position:fixed; inset:0; z-index:0; pointer-events:none;
     background:
@@ -37,6 +57,12 @@
       linear-gradient(180deg, #03050c 0%, #050914 40%, #03050c 100%);
     transition:background 1.2s ease;
   }
+  :root[data-theme="light"] .backdrop{
+  background:
+    radial-gradient(ellipse 55% 40% at 15% 0%, rgba(0,179,134,0.08), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 90% 10%, rgba(0,119,182,0.08), transparent 60%),
+    linear-gradient(180deg, #f4f7fa 0%, #eef2f6 40%, #f4f7fa 100%);
+}
   .grid-lines{
     position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.3;
     background-image:
@@ -106,6 +132,37 @@
   .icon-btn:hover{border-color:var(--border-strong); color:var(--mint); transform:translateY(-2px);}
   .icon-btn svg{width:16px; height:16px;}
   .icon-btn.spin svg{animation:spin-once .6s ease;}
+ /* ---------- DARK/LIGHT MODE TOGGLE ---------- */
+/* ---------- COOL REFRESH BUTTON ---------- */
+.refresh-btn{position:relative;}
+.refresh-btn svg{transition:transform .3s ease;}
+.refresh-btn:hover svg{transform:rotate(45deg);}
+.refresh-btn.loading{
+  border-color:var(--border-strong);
+  box-shadow:0 0 14px 2px rgba(0,255,178,0.35);
+  color:var(--mint);
+}
+.refresh-btn.loading svg{animation:refresh-spin .7s linear infinite;}
+@keyframes refresh-spin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+.refresh-btn.loading::after{
+  content:''; position:absolute; inset:-3px; border-radius:50%;
+  border:1.5px solid transparent; border-top-color:var(--mint); border-right-color:var(--mint);
+  animation:refresh-ring-spin 0.9s linear infinite;
+}
+@keyframes refresh-ring-spin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+.refresh-btn.done svg{animation:refresh-pop .4s ease;}
+@keyframes refresh-pop{ 0%{transform:scale(1);} 40%{transform:scale(1.25);} 100%{transform:scale(1);} }
+ .theme-toggle{position:relative; overflow:hidden;}
+.theme-toggle svg{
+  position:absolute; top:50%; left:50%; width:16px; height:16px;
+  transform:translate(-50%,-50%) rotate(0deg) scale(1);
+  transition:transform .45s cubic-bezier(.4,0,.2,1), opacity .4s ease;
+}
+.theme-toggle .icon-sun{opacity:0; transform:translate(-50%,-50%) rotate(-90deg) scale(0.4);}
+.theme-toggle .icon-moon{opacity:1; transform:translate(-50%,-50%) rotate(0deg) scale(1);}
+.theme-toggle.is-light .icon-sun{opacity:1; transform:translate(-50%,-50%) rotate(0deg) scale(1); color:var(--gold);}
+.theme-toggle.is-light .icon-moon{opacity:0; transform:translate(-50%,-50%) rotate(90deg) scale(0.4);}
+.theme-toggle:hover{transform:translateY(-2px) rotate(8deg);}
   @keyframes spin-once{ from{transform:rotate(0);} to{transform:rotate(360deg);} }
 
   .unit-toggle{display:flex; background:var(--panel); border:1px solid var(--border); border-radius:999px; padding:3px; backdrop-filter:blur(12px);}
@@ -141,6 +198,10 @@
     background:linear-gradient(180deg, #ffffff, #baffe6); -webkit-background-clip:text; background-clip:text; color:transparent;
     opacity:0; animation:fade-up .7s ease forwards .2s;
   }
+  :root[data-theme="light"] .hero-price{
+  background:linear-gradient(180deg, #0b1220, #00b386);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
   .change-badge{
     display:inline-flex; align-items:center; gap:6px; padding:7px 16px; border-radius:999px;
     font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600;
@@ -167,6 +228,48 @@
     letter-spacing:1.5px; color:var(--blue); border:1px solid rgba(46,197,255,0.35);
     padding:4px 10px; border-radius:999px; background:rgba(46,197,255,0.08);
   }
+  .ai-head{ justify-content:space-between; } /* update existing rule to push toggle right */
+
+.ai-toggle{ margin-left:auto; position:relative; display:inline-block; cursor:pointer; }
+.ai-toggle input{ position:absolute; opacity:0; width:0; height:0; }
+
+.ai-toggle-track{
+  display:block; width:46px; height:24px; border-radius:999px;
+  background:rgba(255,255,255,0.06); border:1px solid var(--border);
+  transition:background .35s ease, border-color .35s ease;
+  position:relative;
+}
+.ai-toggle input:checked ~ .ai-toggle-track{
+  background:linear-gradient(120deg, rgba(0,255,178,0.25), rgba(46,197,255,0.25));
+  border-color:var(--border-strong);
+  box-shadow:0 0 14px 1px rgba(0,255,178,0.25);
+}
+
+.ai-toggle-thumb{
+  position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%;
+  background:var(--muted);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1), background .35s ease;
+}
+.ai-toggle input:checked ~ .ai-toggle-track .ai-toggle-thumb{
+  transform:translateX(22px);
+  background:linear-gradient(140deg, var(--mint), var(--blue));
+  box-shadow:0 0 10px 2px rgba(0,255,178,0.6);
+}
+
+.ai-toggle-ring{
+  position:absolute; inset:-6px; border-radius:50%;
+  border:1.5px solid var(--mint); opacity:0; transform:scale(0.6);
+}
+.ai-toggle input:checked ~ .ai-toggle-track .ai-toggle-thumb .ai-toggle-ring{
+  animation:ai-toggle-pulse 1.6s ease-out infinite;
+}
+@keyframes ai-toggle-pulse{
+  0%{ opacity:0.7; transform:scale(0.6); }
+  70%{ opacity:0; transform:scale(1.8); }
+  100%{ opacity:0; transform:scale(1.8); }
+}
+
+.ai-toggle-track:active .ai-toggle-thumb{ transform:scale(0.9) translateX(var(--x,0)); }
   .ai-badge svg{width:12px; height:12px; animation:sparkle-spin 3s linear infinite;}
   @keyframes sparkle-spin{ from{transform:rotate(0);} to{transform:rotate(360deg);} }
   .ai-panel h3{font-family:'Orbitron',sans-serif; font-size:13px; letter-spacing:1.5px; font-weight:600;}
@@ -273,11 +376,18 @@
       <div>PULSE<small>NEURAL MARKET TERMINAL</small></div>
     </div>
     <div class="controls">
+      <button class="icon-btn refresh-btn" id="refreshBtn" title="Refresh data">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0114.85-3.36L23 10M1 14l4.65 4.36A9 9 0 0020.5 15"/></svg>
+</button>
       <div class="search-box">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
         <input id="searchInput" type="text" placeholder="Search coin or symbol..." autocomplete="off">
         <div class="search-suggest" id="searchSuggest"></div>
       </div>
+      <button class="icon-btn theme-toggle" id="themeToggle" title="Toggle dark / light mode">
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
       <button class="icon-btn" id="refreshBtn" title="Refresh data">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0114.85-3.36L23 10M1 14l4.65 4.36A9 9 0 0020.5 15"/></svg>
       </button>
@@ -292,7 +402,7 @@
     <div class="loader-state">CONNECTING TO MARKET FEED<div class="scan-bar"></div></div>
   </div>
 
-  <footer>PULSE · LIVE DATA VIA COINGECKO · INSIGHTS GENERATED LOCALLY · BUILT FOR EXPERIMENTATION</footer>
+  <footer>PULSE · LIVE DATA VIA COINGECKO · INSIGHTS GENERATED LOCALLY · BUILT BY RISHABH</footer>
 </div>
 
 <script>
@@ -303,6 +413,28 @@ let coins = [];
 let heroCoin = null;
 let prevHeroPrice = null;
 
+/* ============ DARK / LIGHT MODE TOGGLE ============ */
+const themeToggleBtn = document.getElementById('themeToggle');
+const rootEl = document.documentElement;
+
+function applyTheme(theme){
+  rootEl.setAttribute('data-theme', theme);
+  themeToggleBtn.classList.toggle('is-light', theme === 'light');
+  themeToggleBtn.title = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+  try{ localStorage.setItem('pulse-theme', theme); }catch(e){}
+}
+
+(function initTheme(){
+  let saved = null;
+  try{ saved = localStorage.getItem('pulse-theme'); }catch(e){}
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  applyTheme(saved || (prefersLight ? 'light' : 'dark'));
+})();
+
+themeToggleBtn.addEventListener('click', ()=>{
+  const next = rootEl.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  applyTheme(next);
+});
 /* ============ NETWORK PARTICLE BACKGROUND (blockchain node motif) ============ */
 const canvas = document.getElementById('particle-canvas');
 const ctx = canvas.getContext('2d');
@@ -544,10 +676,18 @@ function renderAll(){
     </div>
 
     <div class="ai-panel">
-      <div class="ai-head">
-        <div class="ai-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l1.6 5.2L19 9l-5.4 1.8L12 16l-1.6-5.2L5 9l5.4-1.8L12 2z"/></svg>AI INSIGHT ENGINE</div>
-        <h3>Market Pulse</h3>
-      </div>
+    <div class="ai-head">
+  <div class="ai-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l1.6 5.2L19 9l-5.4 1.8L12 16l-1.6-5.2L5 9l5.4-1.8L12 2z"/></svg>AI INSIGHT ENGINE</div>
+  <h3>Market Pulse</h3>
+  <label class="ai-toggle" id="aiToggle">
+    <input type="checkbox" id="aiToggleInput" checked>
+    <span class="ai-toggle-track">
+      <span class="ai-toggle-thumb">
+        <span class="ai-toggle-ring"></span>
+      </span>
+    </span>
+  </label>
+</div>
       <div id="aiInsightText"></div>
       <div class="ask-ai">
         <input type="text" id="aiQueryInput" placeholder='Ask about a coin — "how is ethereum doing?"'>
@@ -583,7 +723,20 @@ function renderAll(){
 
   // AI insight typewriter
   typeText(document.getElementById('aiInsightText'), generateMarketInsight(), 12);
+const aiToggleInput = document.getElementById('aiToggleInput');
+const aiPanelBody = document.querySelectorAll('#aiInsightText, .ask-ai, #aiAnswer');
 
+aiToggleInput.addEventListener('change', ()=>{
+  const on = aiToggleInput.checked;
+  aiPanelBody.forEach(el => {
+    el.style.transition = 'opacity .3s ease, max-height .3s ease';
+    el.style.opacity = on ? '1' : '0';
+    el.style.pointerEvents = on ? 'auto' : 'none';
+    el.style.maxHeight = on ? '200px' : '0px';
+    el.style.overflow = 'hidden';
+  });
+  if(on) typeText(document.getElementById('aiInsightText'), generateMarketInsight(), 12);
+});
   document.getElementById('aiAskBtn').addEventListener('click', handleAiAsk);
   document.getElementById('aiQueryInput').addEventListener('keydown', e=>{ if(e.key==='Enter') handleAiAsk(); });
 
@@ -700,6 +853,16 @@ document.getElementById('unitINR').addEventListener('click', ()=>{
   document.getElementById('unitUSD').classList.remove('active');
   prevHeroPrice = null;
   fetchMarkets();
+  document.getElementById('refreshBtn').addEventListener('click', (e)=>{
+  const btn = e.currentTarget;
+  if(btn.classList.contains('loading')) return; // ignore double-clicks mid-refresh
+  btn.classList.add('loading');
+  fetchMarkets().finally(()=>{
+    btn.classList.remove('loading');
+    btn.classList.add('done');
+    setTimeout(()=> btn.classList.remove('done'), 400);
+  });
+});
 });
 fetchMarkets();
 </script>
