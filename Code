@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="enhh">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -111,8 +111,7 @@
   .unit-toggle{display:flex; background:var(--panel); border:1px solid var(--border); border-radius:999px; padding:3px; backdrop-filter:blur(12px);}
   .unit-toggle button{background:transparent; border:none; color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:12px; padding:7px 13px; border-radius:999px; cursor:pointer; transition:all .2s;}
   .unit-toggle button.active{background:var(--mint); color:#022017; font-weight:600;}
-
-  /* ---------- HERO ---------- */
+  
   .hero{
     position:relative; border:1px solid var(--border); border-radius:28px;
     padding:44px 40px 34px; background:linear-gradient(160deg, rgba(10,22,30,0.55), rgba(6,10,20,0.35));
